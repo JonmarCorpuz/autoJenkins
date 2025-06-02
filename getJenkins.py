@@ -57,61 +57,32 @@ def install_jenkins_ubuntu():
 # tmp
 def install_jenkins_redhat():
 
-    # tmp
-    run_cmd('sudo wget -O /etc/apt/keyrings/jenkins-keyring.asc '
-            'https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key')
+    run_cmd('sudo yum -y install wget')
 
-    # tmp
-    run_cmd('echo "deb [signed-by=/etc/apt/keyrings/jenkins-keyring.asc] '
-            'https://pkg.jenkins.io/debian-stable binary/" | sudo tee '
-            '/etc/apt/sources.list.d/jenkins.list > /dev/null')
+    # Download Jenkins repo file
+    run_cmd('sudo wget -O /etc/yum.repos.d/jenkins.repo '
+            'https://pkg.jenkins.io/redhat-stable/jenkins.repo')
 
-    # tmp
-    run_cmd('sudo yum -y update')
-    run_cmd('sudo yum -y install jenkins')
+    # Import Jenkins GPG key
+    run_cmd('sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key')
 
-    # tmp
-    run_cmd('sudo yum -y update')
-    run_cmd('sudo yum -y install fontconfig openjdk-21-jre')
+    # Upgrade existing packages
+    run_cmd('sudo yum upgrade -y')
 
-    # tmp
-    run_cmd('java --version')
-    run_cmd('sudo systemctl status jenkins')
+    # Install required dependencies
+    run_cmd('sudo yum install -y fontconfig java-21-openjdk')
 
-# tmp
-def install_jenkins_centos():
-    
-    # tmp
-    run_cmd('sudo wget -O /etc/apt/keyrings/jenkins-keyring.asc '
-            'https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key')
+    # Install Jenkins
+    run_cmd('sudo yum install -y jenkins')
 
-    # tmp
-    run_cmd('echo "deb [signed-by=/etc/apt/keyrings/jenkins-keyring.asc] '
-            'https://pkg.jenkins.io/debian-stable binary/" | sudo tee '
-            '/etc/apt/sources.list.d/jenkins.list > /dev/null')
-
-    # tmp
-    run_cmd('sudo dnf -y update')
-    run_cmd('sudo dnf -y install jenkins')
-
-    # tmp
-    run_cmd('sudo dnf -y update')
-    run_cmd('sudo dnf -y install fontconfig openjdk-21-jre')
-
-    # tmp
-    run_cmd('java --version')
-    run_cmd('sudo systemctl status jenkins')
+    # Reload systemd manager configuration
+    run_cmd('sudo systemctl daemon-reload')
 
 # tmp
 def main():
     
     # tmp
     os_type = get_os()
-
-    # tmp
-    if os_type == 'undetermined':
-        print("Couldn't determine your system's OS")
-        sys.exit(1)
 
     # tmp
     print(f"Detected OS: {os_type}")
@@ -123,8 +94,9 @@ def main():
     elif os_type == 'RedHat':
         install_jenkins_redhat()
     # tmp
-    elif os_type == 'CentOS':
-        install_jenkins_centos()
+    else:
+        print("Couldn't determine your system's OS")
+        sys.exit(1)
 
 # ==== MAIN BODY ========================================================
 if __name__ == "__main__":
