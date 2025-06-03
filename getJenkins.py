@@ -98,7 +98,7 @@ def main():
         install_jenkins_redhat()
     # tmp
     else:
-        print("Couldn't determine your system's OS")
+        print("This script couldn't determine your system's OS")
         sys.exit(1)
 
 # ==== MAIN BODY ========================================================
