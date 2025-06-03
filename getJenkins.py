@@ -16,8 +16,6 @@ def get_os():
                 return 'Ubuntu'
             elif 'red hat' in content:
                 return 'RedHat'
-            elif 'centos' in content:
-                return 'CentOS'
     except Exception as e:
         print(f"Error reading OS info: {e}")
         return 'undetermined'
