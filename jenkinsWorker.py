@@ -40,7 +40,7 @@ def setup_jenkins_agent_ubuntu():
     os.makedirs(WORKDIR, exist_ok=True)
 
     # Install Java if not installed
-    run_cmd("sudo apt update && sudo apt install -y openjdk-21-jre")
+    run_cmd("sudo apt update && sudo apt install -y openjdk-21-jre wget")
 
     # Download agent.jar
     run_cmd(f"sudo wget {JENKINS_URL}/jnlpJars/agent.jar -O {WORKDIR}/agent.jar")
@@ -56,7 +56,7 @@ def setup_jenkins_agent_redhat():
     os.makedirs(WORKDIR, exist_ok=True)
 
     # Install Java (OpenJDK 21)
-    run_cmd("sudo yum install -y java-21-openjdk")
+    run_cmd("sudo yum install -y java-21-openjdk wget")
 
     # Download agent.jar
     run_cmd(f"sudo wget {JENKINS_URL}/jnlpJars/agent.jar -O {WORKDIR}/agent.jar")
