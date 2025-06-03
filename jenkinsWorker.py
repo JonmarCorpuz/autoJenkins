@@ -43,7 +43,7 @@ def setup_jenkins_agent_ubuntu():
     run_cmd("sudo apt update && sudo apt install -y openjdk-21-jre")
 
     # Download agent.jar
-    run_cmd(f"wget {JENKINS_URL}/jnlpJars/agent.jar -O {WORKDIR}/agent.jar")
+    run_cmd(f"sudo wget {JENKINS_URL}/jnlpJars/agent.jar -O {WORKDIR}/agent.jar")
 
     # Start the agent (you can background this or create a systemd service)
     run_cmd(f"java -jar {WORKDIR}/agent.jar "
@@ -59,7 +59,7 @@ def setup_jenkins_agent_redhat():
     run_cmd("sudo yum install -y java-21-openjdk")
 
     # Download agent.jar
-    run_cmd(f"wget {JENKINS_URL}/jnlpJars/agent.jar -O {WORKDIR}/agent.jar")
+    run_cmd(f"sudo wget {JENKINS_URL}/jnlpJars/agent.jar -O {WORKDIR}/agent.jar")
 
     # Start the Jenkins agent
     run_cmd(f"java -jar {WORKDIR}/agent.jar "
