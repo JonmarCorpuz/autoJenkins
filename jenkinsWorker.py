@@ -5,15 +5,17 @@ import os
 import subprocess
 
 # ==== STATIC VARIABLES =================================================
-JENKINS_URL = "http://<JENKINS_MASTER_IP>:8080"
-AGENT_NAME = "ubuntu-agent"
-AGENT_SECRET = "<YOUR_SECRET_HERE>"
+JENKINS_URL = "http://JENKINS_CONTROLLER_IP:8080"
+AGENT_NAME = "AGENT_NAME"
+AGENT_SECRET = "AGENT_SECRET"
 WORKDIR = "/home/jenkins"
 
 # ==== FUNCTIONS ========================================================
 
 # tmp
 def get_os():
+
+    # tmp
     try:
         with open('/etc/os-release', 'r') as f:
             content = f.read().lower()
@@ -23,9 +25,10 @@ def get_os():
                 return 'RedHat'
             elif 'centos' in content:
                 return 'CentOS'
+    # tmp
     except Exception as e:
         print(f"Error reading OS info: {e}")
-    return 'undetermined'
+        return 'undetermined'
 
 # tmp
 def run_cmd(cmd):
@@ -39,29 +42,31 @@ def run_cmd(cmd):
 def setup_jenkins_agent_ubuntu():
     os.makedirs(WORKDIR, exist_ok=True)
 
-    # Install Java if not installed
+    # tmp
     run_cmd("sudo apt update && sudo apt install -y openjdk-21-jre wget")
 
-    # Download agent.jar
+    # tmp
     run_cmd(f"sudo wget {JENKINS_URL}/jnlpJars/agent.jar -O {WORKDIR}/agent.jar")
 
-    # Start the agent (you can background this or create a systemd service)
+    # tmp
     run_cmd(f"java -jar {WORKDIR}/agent.jar "
             f"-jnlpUrl {JENKINS_URL}/computer/{AGENT_NAME}/jenkins-agent.jnlp "
             f"-secret {AGENT_SECRET} "
             f"-workDir {WORKDIR}")
 
+# tmp
 def setup_jenkins_agent_redhat():
-    # Create working directory
+    
+    # tmp
     os.makedirs(WORKDIR, exist_ok=True)
 
-    # Install Java (OpenJDK 21)
+    # tmp
     run_cmd("sudo yum install -y java-21-openjdk wget")
 
-    # Download agent.jar
+    # tmp
     run_cmd(f"sudo wget {JENKINS_URL}/jnlpJars/agent.jar -O {WORKDIR}/agent.jar")
 
-    # Start the Jenkins agent
+    # tmp
     run_cmd(f"java -jar {WORKDIR}/agent.jar "
             f"-jnlpUrl {JENKINS_URL}/computer/{AGENT_NAME}/jenkins-agent.jnlp "
             f"-secret {AGENT_SECRET} "
@@ -84,7 +89,7 @@ def main():
         setup_jenkins_agent_redhat()
     # tmp
     else:
-        print("Couldn't determine your system's OS")
+        print("The system's OS couldn't be detected")
         sys.exit(1)
     
 # ==== MAIN BODY ========================================================
