@@ -9,6 +9,8 @@ import sys
 
 # tmp
 def get_os():
+
+    # tmp
     try:
         with open('/etc/os-release', 'r') as f:
             content = f.read().lower()
@@ -18,9 +20,10 @@ def get_os():
                 return 'RedHat'
             elif 'centos' in content:
                 return 'CentOS'
+    # tmp
     except Exception as e:
         print(f"Error reading OS info: {e}")
-    return 'undetermined'
+        return 'undetermined'
 
 # tmp
 def run_cmd(cmd):
@@ -59,23 +62,23 @@ def install_jenkins_redhat():
 
     run_cmd('sudo yum -y install wget')
 
-    # Download Jenkins repo file
+    # tmp
     run_cmd('sudo wget -O /etc/yum.repos.d/jenkins.repo '
             'https://pkg.jenkins.io/redhat-stable/jenkins.repo')
 
-    # Import Jenkins GPG key
+   # tmp
     run_cmd('sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key')
 
-    # Upgrade existing packages
+    # tmp
     run_cmd('sudo yum upgrade -y')
 
-    # Install required dependencies
+    # tmp
     run_cmd('sudo yum install -y fontconfig java-21-openjdk')
 
-    # Install Jenkins
+    # tmp
     run_cmd('sudo yum install -y jenkins')
 
-    # Reload systemd manager configuration
+    # tmp
     run_cmd('sudo systemctl daemon-reload')
 
 # tmp
