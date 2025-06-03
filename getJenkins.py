@@ -7,10 +7,8 @@ import sys
 
 # ==== FUNCTIONS ========================================================
 
-# tmp
+# Detect the Linux distribution by checking /etc/os-release content
 def get_os():
-
-    # tmp
     try:
         with open('/etc/os-release', 'r') as f:
             content = f.read().lower()
@@ -20,12 +18,11 @@ def get_os():
                 return 'RedHat'
             elif 'centos' in content:
                 return 'CentOS'
-    # tmp
     except Exception as e:
         print(f"Error reading OS info: {e}")
         return 'undetermined'
 
-# tmp
+# Run a shell command and exit the script if it fails
 def run_cmd(cmd):
     print(f"Running: {cmd}")
     result = subprocess.run(cmd, shell=True)
@@ -33,70 +30,68 @@ def run_cmd(cmd):
         print(f"Command failed: {cmd}")
         sys.exit(1)
 
-# tmp
+# Install the Jenkins controller on an Ubuntu node
 def install_jenkins_ubuntu():
 
-    # tmp
+    # Install wget
+    run_cmd('sudo apt -y install wget')
+    
+    # Download and store the Jenkins GPG key securely in the apt keyrings directory
     run_cmd('sudo wget -O /etc/apt/keyrings/jenkins-keyring.asc '
             'https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key')
 
-    # tmp
+    # Add the Jenkins APT repository with GPG key verification
     run_cmd('echo "deb [signed-by=/etc/apt/keyrings/jenkins-keyring.asc] '
             'https://pkg.jenkins.io/debian-stable binary/" | sudo tee '
             '/etc/apt/sources.list.d/jenkins.list > /dev/null')
 
-    # tmp
+    # Update package lists and install Jenkins
     run_cmd('sudo apt-get -y update')
     run_cmd('sudo apt-get -y install jenkins')
 
-    # tmp
+    # Ensure Java 21 and required font libraries are installed for Jenkins
     run_cmd('sudo apt -y update')
     run_cmd('sudo apt install -y fontconfig openjdk-21-jre')
 
-    # tmp
+    # Verify Java installation and check Jenkins service status
     run_cmd('java --version')
     run_cmd('sudo systemctl status jenkins')
 
-# tmp
+# Install the Jenkins controller on a RedHat node
 def install_jenkins_redhat():
 
+    # Install wget
     run_cmd('sudo yum -y install wget')
 
-    # tmp
+    # Download the Jenkins YUM repository configuration file
     run_cmd('sudo wget -O /etc/yum.repos.d/jenkins.repo '
             'https://pkg.jenkins.io/redhat-stable/jenkins.repo')
 
-   # tmp
+    # Import the Jenkins GPG key for package verification
     run_cmd('sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key')
 
-    # tmp
+    # Upgrade all system packages to their latest version
     run_cmd('sudo yum upgrade -y')
 
-    # tmp
+    # Install required Java runtime and font libraries for Jenkins
     run_cmd('sudo yum install -y fontconfig java-21-openjdk')
 
-    # tmp
+    # Install the Jenkins package from the added repository
     run_cmd('sudo yum install -y jenkins')
 
-    # tmp
+    # Reload systemd to recognize Jenkins service
     run_cmd('sudo systemctl daemon-reload')
 
-# tmp
+# Main function to determine OS and call the appropriate setup function
 def main():
     
-    # tmp
     os_type = get_os()
-
-    # tmp
     print(f"Detected OS: {os_type}")
 
-    # tmp
     if os_type == 'Ubuntu':
         install_jenkins_ubuntu()
-    # tmp
     elif os_type == 'RedHat':
         install_jenkins_redhat()
-    # tmp
     else:
         print("This script couldn't determine your system's OS")
         sys.exit(1)
