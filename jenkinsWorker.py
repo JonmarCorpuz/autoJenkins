@@ -89,7 +89,7 @@ def main():
         setup_jenkins_agent_redhat()
     # tmp
     else:
-        print("The system's OS couldn't be detected")
+        print("This script couldn't determine your system's OS")
         sys.exit(1)
     
 # ==== MAIN BODY ========================================================
